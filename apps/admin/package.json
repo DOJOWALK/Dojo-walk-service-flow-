@@ -1,0 +1,8 @@
+{
+  "name": "@dojo-walk/admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "typecheck": "tsc --noEmit" },
+  "dependencies": { "next": "latest", "react": "latest", "react-dom": "latest", "lucide-react": "latest" },
+  "devDependencies": { "@types/node": "latest", "@types/react": "latest", "typescript": "latest" }
+}

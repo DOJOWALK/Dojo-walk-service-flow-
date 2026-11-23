@@ -13,6 +13,14 @@
         {
           "locationWhenInUsePermission": "DOJO WALK uses your location to record arrival at an assigned dog walk."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "DOJO WALK uses your camera to record required outside handover evidence.",
+          "photosPermission": false,
+          "microphonePermission": false
+        }
       ]
     ],
     "android": {

@@ -66,3 +66,5 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - Added GitHub Actions CI workflow to install dependencies, run workspace type checks and build the Admin app on main pushes / pull requests.
 - Added EAS preview APK and production Android App Bundle profiles for Customer and Walker apps.
 - EAS project initialization, signing credentials, actual builds, and device installation are still pending. CI has been configured but has not yet been observed passing.
+
+- Added strict TypeScript configuration and a typecheck script for the shared domain package; root typecheck now includes domain, customer, walker and admin.

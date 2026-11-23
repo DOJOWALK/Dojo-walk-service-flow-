@@ -6,14 +6,14 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 
 - 13 public tables with RLS enabled.
 - 54 package rows: 18 approved 30-minute prices and 36 quote-only 45/60-minute combinations.
-- 12 original Service Flow RPCs plus 8 operational RPCs for handover, incidents and payout workflow.
+- 12 original Service Flow RPCs plus 9 operational RPCs for handover completion, incidents and payout workflow (21 application RPCs total).
 - Customer and Walker Expo clients with persistent Supabase sessions and email OTP role gates.
 - Admin Next.js OTP gate with database role check.
 - Customer profile and dog profile save/load.
 - Customer package catalogue lookup, manual UPI reference submission, active subscription schedule setup and live walk history.
 - Admin manual payment review/activation, recurring booking generation up to 30 days, walker assignment and completed-walk verification.
 - Walker assigned-duty list, accept, foreground GPS arrival snapshot, start, end and report submission.
-- Outside handover request with GPS snapshot, customer YES/NO consent and Admin approval/rejection.
+- Outside handover request with GPS snapshot, customer YES/NO consent, Admin approval/rejection and walker completion confirmation with a second GPS audit event.
 - Incident report submission and Admin resolution.
 - Manual payout drafts restricted to walkers with verified completed walks; Admin approve/mark paid; Walker can see own payout records.
 - Admin pricing catalogue reads the staging package rows. No derived 45/60-minute prices are displayed.

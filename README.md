@@ -47,6 +47,13 @@ This is an npm workspaces repository. From the repository root, install workspac
 
 The customer and walker projects also expose `typecheck` scripts. The admin project exposes `typecheck` and `build`. These commands have not yet been run in this repository session; check SDK/package compatibility and resolve any errors before release.
 
+## Customer map release configuration
+
+- Customer app pins `react-native-maps` to the Expo SDK 58 documented compatible version.
+- Set `GOOGLE_MAPS_API_KEY` as a protected EAS environment variable before Android release builds. The app config reads it at build time; never commit the key.
+- Configure `EXPO_PUBLIC_OSM_TILE_URL` with a production-appropriate OSM-derived tile provider. Do not use the public OSMF community tile server as an unlimited commercial tile backend.
+- The map screen is not production-ready until provider terms, API key restrictions, attribution, geocoding and device testing are complete.
+
 ## Validation and Android builds
 
 From the repository root:

@@ -13,7 +13,7 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 - Customer package catalogue lookup, manual UPI reference submission, active subscription schedule setup and live walk history.
 - Admin manual payment review/activation, recurring booking generation up to 30 days, walker assignment and completed-walk verification.
 - Walker assigned-duty list, accept, foreground GPS arrival snapshot, start, end and report submission.
-- Outside handover request with GPS snapshot, private camera photo upload, customer YES/NO consent, Admin photo review/approval and walker completion confirmation with a second GPS audit event.
+- Outside handover request with GPS snapshot, private camera photo upload, customer photo review and YES/NO consent, Admin photo review/approval and walker completion confirmation with a second GPS audit event.
 - Incident report submission and Admin resolution.
 - Manual payout drafts restricted to walkers with verified completed walks; Admin approve/mark paid; Walker can see own payout records.
 - Admin pricing catalogue reads the staging package rows. No derived 45/60-minute prices are displayed.
@@ -33,7 +33,7 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 
 ## Staging database and source-control notes
 
-The separate staging project has 10 applied migrations, 13 RLS-enabled tables and 22 application RPCs (plus the Auth profile trigger). The original five database migrations were applied before their SQL source files were added to the repository; the five follow-up migration SQL files are mirrored with the applied versions. The original five core migration SQL sources are still missing and must be reconstructed before a clean database rebuild from repository migrations. Reconstruct and commit the first five SQL sources before relying on a clean database rebuild from repository migrations.
+The separate staging project has 11 applied migrations, 13 RLS-enabled tables and 22 application RPCs (plus the Auth profile trigger). The original five database migrations were applied before their SQL source files were added to the repository; the six follow-up migration SQL files are mirrored with the applied versions. The original five core migration SQL sources are still missing and must be reconstructed before a clean database rebuild from repository migrations. Reconstruct and commit the first five SQL sources before relying on a clean database rebuild from repository migrations.
 
 All new client configuration uses the staging publishable key, never a service-role key. The existing populated Supabase project was not modified.
 

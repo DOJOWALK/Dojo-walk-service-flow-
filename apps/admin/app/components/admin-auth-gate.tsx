@@ -11,11 +11,9 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
   const [otp, setOtp] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [session, setSession] = useState<Session | null>(null);
   const [error, setError] = useState("");
 
   async function checkRole(next: Session | null) {
-    setSession(next);
     if (!next || !client) { setStatus("signedOut"); return; }
     const { data, error: profileError } = await client.from("profiles").select("role").eq("id", next.user.id).single();
     if (profileError || data?.role !== "admin") { setStatus("denied"); return; }
@@ -26,7 +24,11 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
     if (!client) { setStatus("signedOut"); return; }
     let active = true;
     client.auth.getSession().then(({ data }) => { if (active) void checkRole(data.session); });
-    const { data } = client.auth.onAuthStateChange((_event, next) => { if (active) void checkRole(next); });
+    const { data } = client.auth.onAuthStateChange((_event, next) => {
+      if (!active) return;
+      if (!next) setStatus("signedOut");
+      else { setStatus("loading"); setTimeout(() => { if (active) void checkRole(next); }, 0); }
+    });
     return () => { active = false; data.subscription.unsubscribe(); };
   }, [client]);
 

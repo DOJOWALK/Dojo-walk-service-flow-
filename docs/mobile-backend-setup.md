@@ -1,30 +1,33 @@
 # Staging backend connection setup
 
-All three app surfaces now have Supabase client/auth integration:
-
-- Customer and Walker Expo apps: persistent Supabase client with email OTP. Customer can create an account; Walker login is restricted to an already provisioned Walker profile.
-- Admin Next.js console: email OTP login, then a database profile role check requiring `admin`.
+All three app surfaces connect to the separate Supabase staging project using its publishable key and RLS.
 
 ## Environment
 
-Each app has a ready-to-copy `.env.example`:
+- Customer Expo: `apps/customer/.env.example`
+- Walker Expo: `apps/walker/.env.example`
+- Admin Next.js: `apps/admin/.env.example`
 
-- `apps/customer/.env.example`
-- `apps/walker/.env.example`
-- `apps/admin/.env.example`
+Each template contains the staging URL and client-safe publishable key. Copy to `.env` in the app folder and restart the dev server. Never use a Supabase secret/service-role key in frontend code.
 
-The staging URL and **publishable** key are prefilled. These values are intended for client-side use; they are not service-role or secret keys. For local development, copy the file to `.env` in that app folder and restart the dev server. For EAS/hosted deployments, add the same variables to that platform's environment settings.
+## Operational flow now wired
 
-Never use a Supabase secret/service-role key in a client app. The publishable key is not an authorization boundary; row-level security and server-side role checks protect data.
+1. Customer signs in by email OTP, saves customer/dog profile, selects a published package and submits a manual UPI transaction reference.
+2. Admin verifies actual payment against the bank/UPI account. Approval activates subscription.
+3. Customer saves address and Single or Double schedule. Single plans choose either morning or evening; Double plans require both.
+4. Admin generates up to 30 days of Monday–Saturday bookings, assigns an approved active walker and verifies walk reports.
+5. Walker sees only assigned duties, accepts, marks arrival using a foreground GPS snapshot, starts and ends the walk, and submits a report.
+6. Customer can view walk history. Outside handover requests require GPS, explicit customer YES and Admin approval. Incidents are recorded and resolved by Admin.
+7. Admin creates payout drafts only for walkers with verified completed walks in the period, manually enters the amount, approves and marks paid. Walker sees only their own payout records.
 
-## Provisioning and test requirements
+## Configuration and launch prerequisites
 
-- Customer profile creation is handled by the staging auth trigger.
-- Walker accounts must be created and approved by a trusted Admin process before Walker sign-in succeeds.
-- The initial Admin profile must be assigned `role = 'admin'` through a trusted owner-side process; never allow users to self-assign roles.
-- Email OTP delivery depends on Supabase Auth provider and SMTP configuration.
-- Test three separate accounts (customer, walker, admin), RLS ownership boundaries, and session persistence before launch.
+- Email OTP delivery depends on Supabase Auth email provider and SMTP configuration.
+- Provision the initial Admin profile and approved Walker profiles through a trusted owner-side process. Never allow users to self-assign roles.
+- Manual UPI reference is not a payment gateway. No QR, webhook, auto reconciliation or refund automation is configured.
+- Walker arrival uses a foreground GPS snapshot only. No continuous/background tracking, geofence or photo evidence upload/storage is implemented.
+- Walker pay rate has not been approved. Payout amount is therefore entered by Admin; no pay rate is invented or auto-calculated.
+- Test three separate customer, walker and admin accounts, RLS ownership boundaries, all RPC transitions and failed-network retry behavior before launch.
+- Security Advisor warnings for SECURITY DEFINER RPCs require an independent review; the functions use fixed search paths and role/ownership checks, but that is not a substitute for penetration testing.
 
-## Not yet wired
-
-These changes connect the client and authentication layer only. Customer booking forms, package payment submission, recurring schedule UI, Walker duty actions, Admin assignment/verification, GPS tracking, photo evidence, handover approval, payment gateway and payroll still need integration and end-to-end verification.
+This remains a staging implementation, not a live production service. Android builds, app-store configuration, SMTP, storage, push notifications, payment gateway, background GPS and end-to-end device QA remain outstanding.

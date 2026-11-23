@@ -73,3 +73,9 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - Extended CI to run Expo Doctor separately for Customer and Walker apps. The previously reported CI success predates these added checks; wait for the next workflow run before treating the expanded CI as green.
 - EAS builds remain blocked until each app is linked to the correct Expo account/project, GitHub access is connected, and any required Maps key is configured. No project IDs or credentials have been invented.
 - Updated Temporary Booking to allow every integer duration from 1–15 days. For day counts without an approved published rate, the UI requests an Admin quote instead of showing a fabricated price.
+
+
+## Supabase backend audit (2026-11-24)
+- Inspected the connected Supabase account: one populated project contains 21 public tables with RLS enabled; the separately named `dojo-walk-staging` project is active and empty.
+- Reviewed the security/performance advisor output. Findings and safe remediation sequence are documented in `docs/backend-audit.md`.
+- No database writes were made because the owner has not confirmed which project is the intended integration target. Do not treat the existing schema as production-ready until RPC authorization, RLS access tests, payment webhooks and device flows are verified.

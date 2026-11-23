@@ -72,3 +72,4 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - Pinned Customer `react-native-maps` to Expo SDK 58's documented compatible version and added dynamic Android Maps API-key config. The real key must be stored in EAS secrets; it is not in Git.
 - Extended CI to run Expo Doctor separately for Customer and Walker apps. The previously reported CI success predates these added checks; wait for the next workflow run before treating the expanded CI as green.
 - EAS builds remain blocked until each app is linked to the correct Expo account/project, GitHub access is connected, and any required Maps key is configured. No project IDs or credentials have been invented.
+- Updated Temporary Booking to allow every integer duration from 1–15 days. For day counts without an approved published rate, the UI requests an Admin quote instead of showing a fabricated price.

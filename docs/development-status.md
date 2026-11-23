@@ -11,6 +11,8 @@ This is an in-progress source scaffold, not a production-ready service.
 - OpenStreetMap configurable map component and provider policy.
 - Supabase staging Service Flow schema with 13 RLS-enabled tables, 54 package rows and 12 authenticated RPCs.
 - Customer and Walker Supabase clients with persisted sessions and email OTP role gates.
+- Customer profile and one-dog profile save/load connected to staging tables.
+- Booking screen reads approved package prices from the live staging catalogue; 45/60-minute packages remain Admin quote-only.
 - Admin console OTP gate that checks the signed-in profile's admin role.
 - Staging environment templates and backend setup documentation.
 

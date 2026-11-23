@@ -6,7 +6,7 @@ import { requireSupabase, supabase, isSupabaseConfigured } from "../lib/supabase
 type Props = { expectedRole: "customer" | "walker"; children: React.ReactNode };
 
 export function AuthGate({ expectedRole, children }: Props) {
-  const [status, setStatus] = useState<"loading" | "signedOut" | "ready" | "wrongRole">("loading");
+  const [status, setStatus] = useState<"loading" | "signedOut" | "ready" | "wrongRole" | "pendingWalker">("loading");
   const [role, setRole] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
@@ -21,7 +21,14 @@ export function AuthGate({ expectedRole, children }: Props) {
       if (error) throw error;
       const actualRole = String(data.role);
       setRole(actualRole);
-      setStatus(actualRole === expectedRole ? "ready" : "wrongRole");
+      if (expectedRole === "walker" && actualRole === "walker") {
+        const { data: walker, error: walkerError } = await requireSupabase()
+          .from("walkers").select("verification_status,is_active").eq("id", current.user.id).maybeSingle();
+        if (walkerError) throw walkerError;
+        setStatus(walker?.verification_status === "approved" && walker.is_active ? "ready" : "pendingWalker");
+      } else {
+        setStatus(actualRole === expectedRole ? "ready" : "wrongRole");
+      }
     } catch {
       setRole(null);
       setStatus("wrongRole");
@@ -80,7 +87,7 @@ export function AuthGate({ expectedRole, children }: Props) {
     <Text style={styles.kicker}>DOJO WALK · SECURE ACCESS</Text>
     <Text style={styles.title}>{expectedRole === "customer" ? "Welcome to DOJO WALK" : "Walker Partner Login"}</Text>
     {!isSupabaseConfigured ? <Text style={styles.message}>Staging connection set karne ke liye app folder mein .env file banayein aur EXPO_PUBLIC_SUPABASE_URL + EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY set karein.</Text> :
-      status === "wrongRole" ? <>
+      status === "pendingWalker" ? <><Text style={styles.message}>Walker profile Admin review mein hai. KYC, training aur approval complete hone tak duty access locked rahega.</Text><Pressable style={styles.button} onPress={() => { void requireSupabase().auth.signOut(); setStatus("signedOut"); }}><Text style={styles.buttonText}>Sign out</Text></Pressable></> : status === "wrongRole" ? <>
         <Text style={styles.message}>{role ? `Is account ka role “${role}” hai. ` : "Profile abhi provision nahi hua. "}{expectedRole === "walker" ? "Walker access Admin approval ke baad milega." : "Customer account se login karein."}</Text>
         <Pressable style={styles.button} onPress={() => { void requireSupabase().auth.signOut(); setStatus("signedOut"); }}><Text style={styles.buttonText}>Sign out</Text></Pressable>
       </> : <>

@@ -14,7 +14,7 @@ Two Supabase projects exist in the account:
 - 14 applied migrations.
 - 14 public tables; all 14 have RLS enabled.
 - 54 service package rows: 18 approved 30-minute rates and 36 quote-only 45/60-minute variants.
-- 25 application RPC functions plus the Auth profile trigger.
+- 28 application RPC functions plus the Auth profile trigger.
 - Private `handover-evidence` Storage bucket, max 5 MB, JPEG/PNG/WebP only.
 - Walker leave requests and primary/backup assignment are persisted.
 - The existing populated Supabase project was not changed.
@@ -75,4 +75,4 @@ The private Storage bucket has a Walker-scoped INSERT policy and participant/Adm
 
 ## Migration source-control caveat
 
-The 15 migrations are applied in staging. The ten follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied version numbers. The original five core migration SQL sources were applied before source files were added to the repository and remain missing. Reconstruct those first five SQL files before expecting a clean database rebuild from the repository migration directory.
+The 17 migrations are applied in staging. The twelve follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied version numbers. The original five core migration SQL sources were applied before source files were added to the repository and remain missing. Reconstruct those first five SQL files before expecting a clean database rebuild from the repository migration directory.

@@ -13,7 +13,7 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 - Admin manual payment review/activation, recurring booking generation up to 30 days, primary-walker assignment, completed-walk verification, handover review, incident resolution and payout ledger.
 - Walker assigned-duty list, accept, foreground GPS arrival snapshot, start/end/report, incident reporting, leave requests, handover photo capture and private upload, approved handover completion and private payout view.
 - Outside handover requires GPS, private camera photo, customer photo review and YES, Admin approval, and a final Walker confirmation with a second GPS audit snapshot.
-- Primary walker is locked on the subscription at first assignment. Backup assignment is allowed only for future bookings during approved primary-walker leave.
+- Primary walker is locked on the subscription at first assignment. Backup assignment is allowed for future requested/assigned/accepted but not started bookings during approved primary-walker leave.
 - Walker capacity is capped at 10 distinct dogs; a 30-minute schedule buffer prevents overlapping duties.
 - Payout drafts require verified completed walks, duplicate walker-period payouts are blocked, and Admin must approve before marking paid. Pay amount is manually entered because no approved walker rate exists.
 
@@ -30,7 +30,7 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 
 ## Staging database and source-control notes
 
-The separate staging project has 14 applied migrations, 14 RLS-enabled tables and 25 application RPCs (plus the Auth profile trigger). The nine follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied versions. The original five core migration SQL sources were applied before they were added to repository source control and are still missing; reconstruct those five files before expecting a clean database rebuild from the repository.
+The separate staging project has 15 applied migrations, 14 RLS-enabled tables and 25 application RPCs (plus the Auth profile trigger). The ten follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied versions. The original five core migration SQL sources were applied before they were added to repository source control and are still missing; reconstruct those five files before expecting a clean database rebuild from the repository.
 
 All client configuration uses the staging publishable key, never a service-role key. The existing populated Supabase project was not modified.
 

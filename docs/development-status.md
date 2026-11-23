@@ -22,14 +22,14 @@ This is an in-progress source scaffold, not a production-ready service.
 ## Not yet implemented / verified
 - Email OTP provider/SMTP configuration and real mailbox sign-in tests.
 - Actual payment gateway/UPI QR, webhook reconciliation and refunds (manual UPI reference verification only).
-- Persisted customer/dog profile, booking and schedule screens wired to the RPCs.
-- Admin live assignment/verification screens wired to the backend.
+- Customer/dog profile, package payment-reference submission, active subscription schedule, and walk history are wired to staging RPCs.
+- Admin payment verification, recurring booking generation, assignment and walk verification screens are wired to staging RPCs.
 - Hiring document upload, KYC review, training records and secure walker provisioning UI.
 - Assignment optimization, permanent primary walker enforcement and travel-time conflict checks.
 - Continuous/background GPS, route navigation and arrival geofence (only foreground GPS snapshot is implemented).
 - Photo storage/evidence upload, push notifications and real-time Admin operations.
-- Leave approvals, backup assignment transactions, customer outside consent and audit persistence.
-- Payment gateway/webhook, payroll ledger, payout approvals, refunds and reconciliation.
+- Leave approvals and backup assignment transactions still need implementation. Customer outside-handover consent and Admin approval RPCs are implemented; photo evidence upload is not.
+- Actual payment gateway/webhook, refunds and reconciliation are not implemented. Manual Admin payout drafts, approval and paid states exist; walker pay rates are not approved and are not calculated.
 - Automated tests, Android builds, device QA, deployment and security review.
 
 ## Owner integration handoff

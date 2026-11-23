@@ -81,3 +81,7 @@ Progressive source scaffold with demo-only app screens and shared business rules
 
 ## Backend readiness
 See [Supabase backend audit and Service Flow handoff](docs/backend-audit.md) for the existing database inventory, security/performance findings, remaining integration work and safe rollout sequence.
+
+
+## Staging Service Flow backend
+The `dojo-walk-staging` Supabase database now has its initial schema, RLS policies, package pricing seed and booking/walk RPCs. See [Backend audit and staging implementation status](docs/backend-audit.md) before connecting clients. Production database was not modified.

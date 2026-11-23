@@ -30,13 +30,13 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 
 ## Staging database and source-control notes
 
-The separate staging project has 17 applied migrations, 14 RLS-enabled tables and 25 application RPCs (plus the Auth profile trigger). The twelve follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied versions. The original five core migration SQL sources were applied before they were added to repository source control and are still missing; reconstruct those five files before expecting a clean database rebuild from the repository.
+The separate staging project has 18 applied migrations, 14 RLS-enabled tables and 25 application RPCs (plus the Auth profile trigger). The thirteen follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied versions. The original five core migration SQL sources were applied before they were added to repository source control and are still missing; reconstruct those five files before expecting a clean database rebuild from the repository.
 
 All client configuration uses the staging publishable key, never a service-role key. The existing populated Supabase project was not modified.
 
 ## Admin pages
 
-Live staging-backed: `/payments`, `/bookings`, `/finance`, `/support`, `/leave`. The `/assignments` route forwards to live booking assignment.
+Live staging-backed: `/customers`, `/walkers`, `/payments`, `/bookings`, `/finance`, `/support`, `/leave`. The `/assignments` route forwards to live booking assignment.
 
 Still demo/scaffold: customer CRM, Walker recruitment/KYC, reports, settings and several live-operations widgets. These do not create live records.
 

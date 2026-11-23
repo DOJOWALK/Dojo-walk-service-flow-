@@ -15,7 +15,7 @@ export default function Book(){
  {loading?<ActivityIndicator color={green}/>:<><View style={s.card}><Text style={s.heading}>Dog profile</Text><Text style={s.value}>{dogName||"No dog profile saved"}</Text><Text style={s.hint}>Ek walk mein ek hi dog. Profile tab se dog add karein.</Text></View>
  <Text style={s.label}>Plan type</Text>{choose(["monthly","temporary"],plan,(v:string)=>{setPlan(v);setDays(v==="monthly"?30:1)})}
  <Text style={s.label}>Days</Text>{choose(plan==="monthly"?[30]:Array.from({length:15},(_,i)=>i+1),days,(v:number)=>setDays(v))}
- <Text style={s.label}>Walk duration</Text>{choose([30,45,60].map(x=>x+" min"),minutes+" min",(v:string)=>setMinutes(Number(v.split(" ")[0]))}
+ <Text style={s.label}>Walk duration</Text>{choose([30,45,60].map(x=>x+" min"),minutes+" min",(v:string)=>setMinutes(Number(v.split(" ")[0])))}
  <Text style={s.label}>Daily service</Text>{choose([{label:"Single · 1 walk",value:1},{label:"Double · 2 walks",value:2}].map(x=>x.label),walks===1?"Single · 1 walk":"Double · 2 walks",(v:string)=>setWalks(v.startsWith("Single")?1:2))}
  <View style={s.card}><Text style={s.heading}>Approved package amount</Text><Text style={s.price}>{selected&&!selected.requires_admin_quote&&selected.price_inr!==null?"₹"+selected.price_inr.toLocaleString("en-IN"):"Admin quote required"}</Text><Text style={s.hint}>{selected?.requires_admin_quote||minutes!==30?"45/60 minute rates are quote-only; no estimated price is displayed.":"Price loaded from approved DOJO WALK staging rate card."}</Text></View>
  <Text style={s.label}>UPI transaction reference</Text><TextInput value={upi} onChangeText={setUpi} placeholder="Enter reference after paying company UPI" autoCapitalize="none" style={s.input}/>

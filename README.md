@@ -77,3 +77,7 @@ The approved 30-minute customer price cards and proportional 45/60-minute estima
 ## Status
 
 Progressive source scaffold with demo-only app screens and shared business rules. It is not yet tested, production-connected or ready for customer use. See `docs/development-status.md` for the current implementation and integration gaps.
+
+
+## Backend readiness
+See [Supabase backend audit and Service Flow handoff](docs/backend-audit.md) for the existing database inventory, security/performance findings, remaining integration work and safe rollout sequence.

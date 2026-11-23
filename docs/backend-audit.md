@@ -75,4 +75,4 @@ The private Storage bucket has a Walker-scoped INSERT policy and participant/Adm
 
 ## Migration source-control caveat
 
-The 13 migrations are applied in staging. The nine follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied version numbers. The original five core migration SQL sources were applied before source files were added to the repository and remain missing. Reconstruct those first five SQL files before expecting a clean database rebuild from the repository migration directory.
+The 14 migrations are applied in staging. The nine follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied version numbers. The original five core migration SQL sources were applied before source files were added to the repository and remain missing. Reconstruct those first five SQL files before expecting a clean database rebuild from the repository migration directory.

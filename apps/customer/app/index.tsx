@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "expo-router";
 import { ScrollView, View, Text, Pressable, StyleSheet } from "react-native";
 const C = { orange:"#F28C28", green:"#173D32", cream:"#FFF9F0", mint:"#E7EFE9", ink:"#202820", muted:"#718078" };
 const areas = ["Gaur City 2","Gaur City 1","Crossings Republik"];
@@ -10,7 +11,7 @@ export default function Home() {
  const [service,setService] = React.useState("Single Walk");
  const [slot,setSlot] = React.useState("Morning");
  return <ScrollView style={s.page} contentContainerStyle={s.content}>
-  <View style={s.top}><View><Text style={s.kicker}>PREMIUM DOG WALKING</Text><Text style={s.brand}>DOJO <Text style={{color:C.orange}}>WALK</Text></Text></View><View style={s.avatar}><Text style={{color:C.green,fontWeight:"800"}}>DW</Text></View></View>
+  <View style={s.top}><View><Text style={s.kicker}>PREMIUM DOG WALKING</Text><Text style={s.brand}>DOJO <Text style={{color:C.orange}}>WALK</Text></Text></View><View style={s.avatar}><Text style={{color:C.green,fontWeight:"800"}}>DW</Text></View></View><View style={{flexDirection:"row",gap:10,marginBottom:14}}><Link href="/profile" style={{color:C.green,fontWeight:"800"}}>My profile ↗</Link><Link href="/book" style={{color:C.orange,fontWeight:"800"}}>Full booking form ↗</Link><Link href="/map" style={{color:C.green,fontWeight:"800"}}>Service map ↗</Link></View>
   <View style={s.hero}><Text style={s.eyebrow}>HAPPY WALKS. HAPPY PAWS.</Text><Text style={s.heroTitle}>Your dog's daily{ "\n" }walk, taken care of.</Text><Text style={s.heroSub}>Trained, verified walkers. A familiar face. Every walk managed by DOJO WALK.</Text><Pressable style={s.cta} onPress={()=>setBooking("Monthly")}><Text style={s.ctaText}>Explore packages  →</Text></Pressable></View>
   <Text style={s.section}>Choose your service</Text>
   {plans.map((p,i)=><Pressable key={p.title} onPress={()=>setBooking(i===0?"Monthly":"Temporary")} style={[s.plan,booking===(i===0?"Monthly":"Temporary")&&s.selected]}><View style={{flex:1}}><Text style={s.tag}>{p.tag}</Text><Text style={s.planTitle}>{p.title}</Text><Text style={s.muted}>{p.sub}</Text></View><Text style={s.arrow}>›</Text></Pressable>)}

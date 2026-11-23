@@ -12,18 +12,22 @@ This is an in-progress source scaffold, not a production-ready service.
 - Supabase staging Service Flow schema with 13 RLS-enabled tables, 54 package rows and 12 authenticated RPCs.
 - Customer and Walker Supabase clients with persisted sessions and email OTP role gates.
 - Customer profile and one-dog profile save/load connected to staging tables.
+- Customer package payment-reference submission, active subscription schedule save, and real walk history connected.
+- Admin payment verification, recurring booking generation (up to 30 days), assignment, walk verification, handover approval, incident resolution and manual payout ledger connected.
+- Walker assigned-duty lifecycle, GPS arrival snapshot, incident/handover request and private payout view connected.
 - Booking screen reads approved package prices from the live staging catalogue; 45/60-minute packages remain Admin quote-only.
 - Admin console OTP gate that checks the signed-in profile's admin role.
 - Staging environment templates and backend setup documentation.
 
 ## Not yet implemented / verified
 - Email OTP provider/SMTP configuration and real mailbox sign-in tests.
+- Actual payment gateway/UPI QR, webhook reconciliation and refunds (manual UPI reference verification only).
 - Persisted customer/dog profile, booking and schedule screens wired to the RPCs.
 - Admin live assignment/verification screens wired to the backend.
 - Hiring document upload, KYC review, training records and secure walker provisioning UI.
 - Assignment optimization, permanent primary walker enforcement and travel-time conflict checks.
-- Device GPS permissions, reliable background tracking, route navigation and arrival geofence.
-- Photo storage, push notifications and real-time Admin operations.
+- Continuous/background GPS, route navigation and arrival geofence (only foreground GPS snapshot is implemented).
+- Photo storage/evidence upload, push notifications and real-time Admin operations.
 - Leave approvals, backup assignment transactions, customer outside consent and audit persistence.
 - Payment gateway/webhook, payroll ledger, payout approvals, refunds and reconciliation.
 - Automated tests, Android builds, device QA, deployment and security review.

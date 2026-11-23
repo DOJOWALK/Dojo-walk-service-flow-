@@ -33,7 +33,7 @@ DOJO WALK is a staging-connected product implementation, not a production-ready 
 
 ## Staging database and source-control notes
 
-The separate staging project has 7 applied migrations, 13 RLS-enabled tables and 20 application RPCs (plus the Auth profile trigger). The original five database migrations were applied before their SQL source files were added to the repository; only the two latest operational migration files currently mirror their applied database versions. Reconstruct and commit the first five SQL sources before relying on a clean database rebuild from repository migrations.
+The separate staging project has 9 applied migrations, 13 RLS-enabled tables and 21 application RPCs (plus the Auth profile trigger). The original five database migrations were applied before their SQL source files were added to the repository; only the two latest operational migration files currently mirror their applied database versions. Reconstruct and commit the first five SQL sources before relying on a clean database rebuild from repository migrations.
 
 All new client configuration uses the staging publishable key, never a service-role key. The existing populated Supabase project was not modified.
 

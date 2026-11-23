@@ -1,8 +1,12 @@
-# Connect mobile apps to staging
+# Mobile staging backend setup
 
-1. Copy this file to `.env` in the app folder.
+Both Expo apps now have a persistent Supabase client and an email OTP role gate.
+
+1. Copy `.env.example` to `.env` in each app folder.
 2. Replace `YOUR_STAGING_PUBLISHABLE_KEY` with the staging project's publishable key from Supabase Project Settings → API Keys.
 3. Never put a Supabase secret/service-role key in an Expo app.
 4. Restart Expo after changing environment variables.
 
-The client persists authenticated sessions on-device and uses the staging project's RLS policies. Auth providers (email/phone OTP) must be enabled in Supabase before sign-in flows can be used.
+Customer accounts can be created through email OTP. Walker accounts are sign-in-only and must first be provisioned/approved by an administrator with `profiles.role = 'walker'`. The role gate reads the signed-in user's own profile under RLS; it does not trust client-supplied role metadata.
+
+Email OTP delivery depends on the Supabase Auth email provider and SMTP configuration. Test with a real mailbox before release. These changes connect the apps to staging but do not yet wire booking screens, GPS, payment gateway, or walker duty actions to RPCs.

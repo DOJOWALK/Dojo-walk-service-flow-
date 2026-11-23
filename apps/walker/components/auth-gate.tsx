@@ -6,7 +6,6 @@ import { requireSupabase, supabase, isSupabaseConfigured } from "../lib/supabase
 type Props = { expectedRole: "customer" | "walker"; children: React.ReactNode };
 
 export function AuthGate({ expectedRole, children }: Props) {
-  const [session, setSession] = useState<Session | null>(null);
   const [status, setStatus] = useState<"loading" | "signedOut" | "ready" | "wrongRole">("loading");
   const [role, setRole] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -15,7 +14,6 @@ export function AuthGate({ expectedRole, children }: Props) {
   const [busy, setBusy] = useState(false);
 
   async function loadRole(current: Session | null) {
-    setSession(current);
     if (!current) { setRole(null); setStatus("signedOut"); return; }
     try {
       const { data, error } = await requireSupabase()
@@ -23,8 +21,8 @@ export function AuthGate({ expectedRole, children }: Props) {
       if (error) throw error;
       const actualRole = String(data.role);
       setRole(actualRole);
-      setStatus(actualRole === expectedRole || actualRole === "admin" ? "ready" : "wrongRole");
-    } catch (error) {
+      setStatus(actualRole === expectedRole ? "ready" : "wrongRole");
+    } catch {
       setRole(null);
       setStatus("wrongRole");
     }
@@ -35,7 +33,12 @@ export function AuthGate({ expectedRole, children }: Props) {
     let active = true;
     supabase.auth.getSession().then(({ data }) => { if (active) void loadRole(data.session); });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (active) void loadRole(nextSession);
+      if (!active) return;
+      if (!nextSession) setStatus("signedOut");
+      else {
+        setStatus("loading");
+        setTimeout(() => { if (active) void loadRole(nextSession); }, 0);
+      }
     });
     return () => { active = false; listener.subscription.unsubscribe(); };
   }, [expectedRole]);
@@ -79,7 +82,7 @@ export function AuthGate({ expectedRole, children }: Props) {
     {!isSupabaseConfigured ? <Text style={styles.message}>Staging connection set karne ke liye app folder mein .env file banayein aur EXPO_PUBLIC_SUPABASE_URL + EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY set karein.</Text> :
       status === "wrongRole" ? <>
         <Text style={styles.message}>{role ? `Is account ka role “${role}” hai. ` : "Profile abhi provision nahi hua. "}{expectedRole === "walker" ? "Walker access Admin approval ke baad milega." : "Customer account se login karein."}</Text>
-        <Pressable style={styles.button} onPress={() => { void requireSupabase().auth.signOut(); }}><Text style={styles.buttonText}>Sign out</Text></Pressable>
+        <Pressable style={styles.button} onPress={() => { void requireSupabase().auth.signOut(); setStatus("signedOut"); }}><Text style={styles.buttonText}>Sign out</Text></Pressable>
       </> : <>
         <Text style={styles.message}>Email par one-time code bhejkar secure login karein.</Text>
         <TextInput style={styles.input} placeholder="Email address" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail}/>

@@ -68,3 +68,7 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - EAS project initialization, signing credentials, actual builds, and device installation are still pending. CI has been configured but has not yet been observed passing.
 
 - Added strict TypeScript configuration and a typecheck script for the shared domain package; root typecheck now includes domain, customer, walker and admin.
+
+- Pinned Customer `react-native-maps` to Expo SDK 58's documented compatible version and added dynamic Android Maps API-key config. The real key must be stored in EAS secrets; it is not in Git.
+- Extended CI to run Expo Doctor separately for Customer and Walker apps. The previously reported CI success predates these added checks; wait for the next workflow run before treating the expanded CI as green.
+- EAS builds remain blocked until each app is linked to the correct Expo account/project, GitHub access is connected, and any required Maps key is configured. No project IDs or credentials have been invented.

@@ -33,9 +33,13 @@ Managed dog-walking operations platform for Gaur City 1, Gaur City 2 and Crossin
 
 OpenStreetMap data is used for map display. The standard OSM tile service is best-effort, not a commercial SLA; production must use a compliant tile provider or self-hosted tiles at scale. Always show © OpenStreetMap contributors attribution and respect tile caching / identification policies. Customer map tiles are configured through `EXPO_PUBLIC_OSM_TILE_URL`.
 
-## Backend integration boundary
+## Backend integration
 
-Database and API integration are intentionally deferred. No Supabase project, API keys, OTP provider, payment gateway or production backend is configured. Add those later through environment variables and server-side adapters; never commit secrets. Current screens show demo data and temporary local state only.
+A separate Supabase staging project is configured for app integration. It contains the Service Flow schema, RLS-enabled tables, package catalogue and authenticated RPCs. Customer and Walker Expo apps now include a persistent Supabase client and email OTP role gate; the Admin console also requires an Admin-role OTP session.
+
+Before running any app, copy each app's `.env.example` to `.env` and set the staging publishable key. Never expose a Supabase secret/service-role key in a client app. See [mobile/admin backend setup](docs/mobile-backend-setup.md).
+
+The apps are connected at the authentication/client layer only. Booking screens, walker duty actions, live GPS, photo evidence, handover approvals, payment gateway and payroll still need end-to-end wiring and tests. The staging backend is not production and the existing populated Supabase project has not been modified.
 
 ## Local development
 
@@ -45,43 +49,10 @@ This is an npm workspaces repository. From the repository root, install workspac
 - `npm run walker` — starts the walker Expo app
 - `npm run admin` — starts the Next.js admin console
 
-The customer and walker projects also expose `typecheck` scripts. The admin project exposes `typecheck` and `build`. These commands have not yet been run in this repository session; check SDK/package compatibility and resolve any errors before release.
+The customer and walker projects also expose `typecheck` scripts. The admin project exposes `typecheck` and `build`. Run `npm run check` before release and resolve any errors.
 
 ## Customer map release configuration
 
 - Customer app pins `react-native-maps` to the Expo SDK 58 documented compatible version.
 - Set `GOOGLE_MAPS_API_KEY` as a protected EAS environment variable before Android release builds. The app config reads it at build time; never commit the key.
-- Configure `EXPO_PUBLIC_OSM_TILE_URL` with a production-appropriate OSM-derived tile provider. Do not use the public OSMF community tile server as an unlimited commercial tile backend.
-- The map screen is not production-ready until provider terms, API key restrictions, attribution, geocoding and device testing are complete.
-
-## Validation and Android builds
-
-From the repository root:
-
-- `npm install` — install workspace dependencies
-- `npm run typecheck` — run Customer, Walker and Admin TypeScript checks
-- `npm run build` — create the Admin production build
-- `npm run check` — run type checks followed by the Admin production build
-
-For Android internal-test APKs, run EAS from each app directory after configuring that app as an EAS project:
-
-- Customer: `cd apps/customer && npx eas-cli build --platform android --profile preview`
-- Walker: `cd apps/walker && npx eas-cli build --platform android --profile preview`
-
-The production profile creates an Android App Bundle. EAS project IDs, Android signing setup, and real cloud builds are not configured or completed yet. Do not distribute a build until authentication, privacy, backend, and device QA are complete.
-
-## Pricing
-
-The approved 30-minute customer price cards and proportional 45/60-minute estimates are documented in `docs/pricing.md`. Walker payout rates remain an independent admin-only configuration and are not exposed to customers.
-
-## Status
-
-Progressive source scaffold with demo-only app screens and shared business rules. It is not yet tested, production-connected or ready for customer use. See `docs/development-status.md` for the current implementation and integration gaps.
-
-
-## Backend readiness
-See [Supabase backend audit and Service Flow handoff](docs/backend-audit.md) for the existing database inventory, security/performance findings, remaining integration work and safe rollout sequence.
-
-
-## Staging Service Flow backend
-The `dojo-walk-staging` Supabase database now has its initial schema, RLS policies, package pricing seed and booking/walk RPCs. See [Backend audit and staging implementation status](docs/backend-audit.md) before connecting clients. Production database was not modified.
+- Configure `EXPO_PUBLIC_OSM_TILE_URL` with a production-appropriate tile provider.

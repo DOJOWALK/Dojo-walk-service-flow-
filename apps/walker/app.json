@@ -6,7 +6,17 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "plugins": ["expo-router"],
-    "android": { "package": "com.dojowalk.walker" }
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "DOJO WALK uses your location to record arrival at an assigned dog walk."
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.dojowalk.walker"
+    }
   }
 }

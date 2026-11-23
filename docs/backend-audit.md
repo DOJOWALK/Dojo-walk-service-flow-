@@ -119,7 +119,7 @@ Security note: Supabase Security Advisor currently flags the 12 authenticated RP
 
 ## Staging follow-up migrations (2026-11-24)
 
-The staging project `pcyrqgowmztbcogamzog` now has nine applied migrations total. The original five Service Flow migrations remain as previously recorded above; four follow-up migrations add:
+The staging project `pcyrqgowmztbcogamzog` now has nine applied migrations total. The original five Service Flow migrations remain as previously recorded above; five follow-up migrations add:
 
 - `service_flow_handover_incidents_payroll`: walker handover request, customer YES/NO, Admin review, incident reporting/resolution, and manually entered payout draft/approval/paid RPCs.
 - `service_flow_30_day_generation_and_incident_resolution`: expands recurring booking generation from 14 to 30 days and moves an incident booking into Admin review after incident resolution.
@@ -129,10 +129,10 @@ The staging project `pcyrqgowmztbcogamzog` now has nine applied migrations total
 Verified staging totals after these changes:
 - 13 public tables; all 13 have RLS enabled.
 - 54 package rows: 18 approved 30-minute rates and 36 quote-only 45/60-minute variants.
-- 21 application RPC functions (plus the Auth profile trigger).
+- 22 application RPC functions (plus the Auth profile trigger).
 - Nine applied migrations.
 
-The four follow-up SQL files are mirrored under `supabase/migrations/` with the exact migration versions recorded by Supabase. The original five migration SQL sources were applied before they were added to repository source control and are still not mirrored; reconstruct those five files before expecting a clean database rebuild from repository migrations.
+The five follow-up SQL files are mirrored under `supabase/migrations/` with the exact migration versions recorded by Supabase. The original five migration SQL sources were applied before they were added to repository source control and are still not mirrored; reconstruct those five files before expecting a clean database rebuild from repository migrations.
 
 ## Client workflow wiring
 

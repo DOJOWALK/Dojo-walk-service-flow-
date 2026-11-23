@@ -1,3 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-export default function RootLayout() { return <><StatusBar style="dark"/><Stack screenOptions={{headerShown:false}}/></>; }
+import { AuthGate } from "../components/auth-gate";
+export default function RootLayout() {
+  return <AuthGate expectedRole="walker"><><StatusBar style="dark"/><Stack screenOptions={{headerShown:false}}/></></AuthGate>;
+}

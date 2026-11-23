@@ -17,7 +17,7 @@ Each template contains the staging URL and client-safe publishable key. Copy to 
 3. Customer saves address and Single or Double schedule. Single plans choose either morning or evening; Double plans require both.
 4. Admin generates up to 30 days of Monday–Saturday bookings, assigns an approved active walker and verifies walk reports.
 5. Walker sees only assigned duties, accepts, marks arrival using a foreground GPS snapshot, starts and ends the walk, and submits a report.
-6. Customer can view walk history. Outside handover requests require GPS, a private camera photo upload, explicit customer YES, Admin approval after photo review and a final walker completion confirmation with another GPS audit snapshot. Incidents are recorded and resolved by Admin.
+6. Customer can view walk history. Outside handover requests require GPS, a private camera photo upload, customer photo review and explicit YES, Admin approval after photo review and a final walker completion confirmation with another GPS audit snapshot. Incidents are recorded and resolved by Admin.
 7. Admin creates payout drafts only for walkers with verified completed walks in the period, manually enters the amount, approves and marks paid. Walker sees only their own payout records.
 
 ## Configuration and launch prerequisites

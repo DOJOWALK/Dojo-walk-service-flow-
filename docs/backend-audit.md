@@ -2,154 +2,77 @@
 
 Updated: 2026-11-24
 
-## Repository / database boundary
+## Project boundary
 
-The repository is an application scaffold. A Supabase account currently exposes two projects:
+Two Supabase projects exist in the account:
 
-- The populated project created as the account's default project has 21 public tables. All 21 tables currently report Row Level Security enabled.
-- The project named `dojo-walk-staging` is active but has no public tables yet.
+- Existing populated project `wtmuvexdtjhgoljyozdx`: 21 public tables were present in the earlier audit. This project has not been modified by the Service Flow work.
+- Separate staging project `pcyrqgowmztbcogamzog` (`dojo-walk-staging`, ap-southeast-1): all implementation and migrations described below were applied here.
 
-Do not assume which project is the intended production database. Before applying schema changes, indexes, policies, or seed data, the owner must confirm whether the populated project is the intended integration target or whether staging should receive a reviewed schema first. No database writes were made during this audit.
+## Current staging verification
 
-## Existing data model found in populated project
-
-The database already has core entities for:
-
-- Profiles, walkers, dogs and pricing
-- Bookings, payments, walker locations, walk events and reviews
-- Service packages, dog subscriptions, subscription payments and recurring walk schedules
-- Walker commissions and payouts
-- Customer credit accounts and ledger
-- Pay-later requests, booking change requests and schedule change requests
-- Business settings
-
-This is a useful starting point; avoid creating duplicate tables before reviewing the existing definitions and constraints.
-
-## Audit findings
-
-### Security
-
-- RLS is enabled on all 21 public tables.
-- The Supabase security advisor reports 18 `SECURITY DEFINER` functions executable by the `authenticated` role. This warning is not proof of an exploitable vulnerability: several inspected RPCs perform role, ownership, or assigned-walker checks internally. However, every function must be reviewed for authorization, fixed `search_path`, and least-privilege grants before launch.
-- The private `is_admin()` helper checks the authenticated user's `profiles.role = 'admin'`. Admin role assignment must remain owner-controlled; never accept a role from client-editable user metadata.
-- Leaked-password protection is disabled in Supabase Auth and should be enabled in the Auth security settings before production use.
-
-### Performance
-
-- The performance advisor reports 20 foreign keys without covering indexes.
-- Two RLS policies re-evaluate auth context per row; use scalar subqueries such as `(select auth.uid())` after reviewing each policy.
-- Multiple permissive policies are reported on several tables. These are not automatically incorrect, but should be consolidated only after checking that customer, walker and Admin access remains unchanged.
-- Several indexes are currently unused. Do not remove them based on a low-traffic staging or early-launch workload alone.
-
-## Service Flow readiness
-
-| Area | Database foundation | Remaining integration / verification |
-|---|---|---|
-| Customer identity and profile | Profiles table exists | OTP provider, onboarding, role-safe profile writes |
-| Dog profile | Dogs table exists | Customer app CRUD, validation, storage for documents if required |
-| Packages and pricing | Service packages and pricing exist | Reconcile approved rate card and quote-only durations; verify package ordering |
-| Booking request | Bookings and customer RPCs exist | Connect app, idempotency, availability and payment gate |
-| Admin assignment | Walker and booking tables exist | Verify permanent-primary assignment rules, max 10 dogs and backup-only exception |
-| Recurring schedule | Subscription schedule tables and generator exist | Verify next-day publication, timezone, duplicate protection and schedule window |
-| Walker execution | Accept/start/finish RPCs and events exist | GPS arrival, geofence review, photo upload, offline handling and Admin completion review |
-| Customer updates | Walk events exist | Realtime subscriptions and push notification delivery |
-| Safety / handover | Not confirmed in current table inventory | Explicit customer YES + Admin approval + immutable audit trail |
-| Finance | Payments, credits, commissions and payouts exist | Payment gateway/webhook verification, refunds, payout reconciliation and monthly close |
-| Support / incidents | Not confirmed as persisted entities in the inventory | Persist incident lifecycle, evidence, assignment, resolution and audit history |
-
-## Non-negotiable business rules to enforce server-side
-
-- DOJO WALK is a managed service. Customers do not select arbitrary walkers; Admin owns primary assignment.
-- One dog per walk. One permanent primary walker per customer/dog where feasible; temporary backup only for approved leave or emergency.
-- A walker may have at most 10 assigned dogs, subject to route and schedule feasibility.
-- Morning service window: 05:00–11:00. Evening: 16:00–22:00. Use Asia/Kolkata consistently.
-- Monthly plans are 30 days. Temporary plans are 1–15 days. Do not invent prices for unapproved day counts or durations.
-- Customer payments and walker payouts are separate ledgers. Customer apps must not expose walker compensation; walker apps must not expose customer payment details.
-- Only verified completed walks accrue walker payout.
-- Handover requires both customer YES and Admin approval; record actor, timestamp, reason, GPS and proof.
-- Leave and backup assignment require Admin approval and customer notification.
-
-## Safe next sequence
-
-1. Owner confirms the intended Supabase target (populated project or empty staging).
-2. Export/review existing schema and RPC definitions; capture a restorable backup.
-3. Review all 18 exposed `SECURITY DEFINER` RPCs and role grants. Do not blanket-revoke functions used by the mobile apps; preserve only explicitly authorized RPCs.
-4. Confirm RLS policy coverage and test customer/walker/Admin access with separate test accounts.
-5. Add the missing indexes in a reviewed migration after capturing the existing schema in version control.
-6. Connect app clients using only the publishable key; keep secret/service-role credentials in server-side secrets.
-7. Wire one vertical slice end-to-end: customer request → Admin assignment → walker accept/start/finish → Admin verification → customer report.
-8. Add payment provider webhooks, push notifications, photo storage, safety workflows and monthly payout reconciliation.
-9. Run automated RLS and domain tests, Android device QA, Supabase advisors and a production security review.
-
-## Current limitation
-
-No database schema or row was changed in this audit. No live booking, payment, GPS session, notification, handover or payout was created. The database is not yet connected to the mobile/admin clients by this audit.
-
-## Staging implementation update (2026-11-24)
-
-The owner selected `dojo-walk-staging` (project ref `pcyrqgowmztbcogamzog`, region `ap-southeast-1`). Four database migrations have been applied successfully:
-
-- `dojo_walk_service_flow_core`
-- `service_flow_booking_walk_rpcs`
-- `service_flow_packages_and_payments`
-- `service_flow_recurring_schedules`
-- `service_flow_limits_and_indexes`
-
-Verified staging inventory: 13 public tables, all 13 with RLS enabled; 12 Service Flow RPCs; 54 package rows. The package seed contains all 18 approved 30-minute rates (Single/Double × 1, 2, 3, 5, 7, 10, 14, 15, 30 days) and 36 45/60-minute Admin-quote-only options. 45/60-minute values were not invented.
-
-Implemented backend foundation:
-- Customer, dog, walker, package, subscription, recurring schedule, booking, walk event, GPS location, handover, incident, payment and payout tables.
-- Customer package payment reference submission and Admin verification (manual UPI reference workflow only; no payment gateway).
-- Admin-only walker assignment with approved/active walker checks and 10-dog capacity guard.
-- Walker accept → GPS arrival → start → finish submission; Admin verify/review.
-- Recurring booking generation window up to 14 days, with India-time morning/evening windows and package walk-count validation.
-- RLS enabled across all 13 tables, role/ownership-aware read policies, and indexes for the identified foreign-key access paths.
-
-Security note: Supabase Security Advisor currently flags the 12 authenticated RPCs as `SECURITY DEFINER`. These are intentionally callable RPC entry points and contain explicit caller/role/ownership/state checks plus an empty fixed search_path. Keep the warning visible for review; do not remove checks or broadly grant table writes to silence the lint.
-
-## Still not production-complete
-
-- Mobile and Admin clients are not yet wired to this staging project; no project URL or publishable key has been committed.
-- No Auth OTP provider, test customer/walker/admin accounts, Storage bucket policies, Realtime subscriptions, push notifications, payment gateway/webhook, or Edge Functions configured.
-- Handover and incident tables exist, but their complete consent/approval RPCs and evidence upload flow are still pending.
-- Payroll tables exist, but completed-walk payout calculation, approval and monthly settlement logic are pending.
-- No end-to-end user-session test has been run. Database migrations and schema counts were verified; app build/device tests were not run.
-- First Admin role must be assigned by the project owner through a trusted server-side/admin process, never from client metadata.
-
-
-## Staging follow-up migrations (2026-11-24)
-
-The staging project `pcyrqgowmztbcogamzog` now has nine applied migrations total. The original five Service Flow migrations remain as previously recorded above; eight follow-up migrations add:
-
-- `service_flow_handover_incidents_payroll`: walker handover request, customer YES/NO, Admin review, incident reporting/resolution, and manually entered payout draft/approval/paid RPCs.
-- `service_flow_30_day_generation_and_incident_resolution`: expands recurring booking generation from 14 to 30 days and moves an incident booking into Admin review after incident resolution.
-- `service_flow_confirm_approved_handover`: requires customer YES and Admin approval before the Walker can record final handover completion; stores a second GPS snapshot and audit event.
-- `service_flow_walker_read_scope_and_profile_policy`: grants walkers read access to dog details only when an assigned booking exists, fixes the walker subscription read join, and allows Walker self-profile edits while retaining role=walker.
-
-Verified staging totals after these changes:
+- 13 applied migrations.
 - 14 public tables; all 14 have RLS enabled.
-- 54 package rows: 18 approved 30-minute rates and 36 quote-only 45/60-minute variants.
-- 25 application RPC functions (plus the Auth profile trigger).
-- Thirteen applied migrations.
+- 54 service package rows: 18 approved 30-minute rates and 36 quote-only 45/60-minute variants.
+- 25 application RPC functions plus the Auth profile trigger.
+- Private `handover-evidence` Storage bucket, max 5 MB, JPEG/PNG/WebP only.
+- Walker leave requests and primary/backup assignment are persisted.
+- The existing populated Supabase project was not changed.
 
-The eight follow-up SQL files are mirrored under `supabase/migrations/` with the exact migration versions recorded by Supabase. The original five migration SQL sources were applied before they were added to repository source control and are still not mirrored; reconstruct those five files before expecting a clean database rebuild from repository migrations.
+## Implemented database workflows
 
-## Client workflow wiring
+### Customer and booking
+- Auth trigger creates customer profiles.
+- Customer owns and edits profile/dog data.
+- Package payment-reference submission creates a pending subscription/payment.
+- Admin payment review activates or rejects the subscription.
+- Customer saves recurring schedule; Single plans require one slot, Double plans require morning and evening.
+- Admin generates up to 30 days of Monday–Saturday bookings.
 
-Customer: profile/dog save, package lookup, manual UPI reference submission, active subscription schedule save, handover consent and walk history.
+### Assignment and walker execution
+- First assignment locks the subscription's primary walker.
+- Subsequent bookings must use that primary walker.
+- Backup assignment is a separate Admin RPC and only allowed for future assigned bookings during approved primary-walker leave.
+- Walker capacity is capped at 10 distinct dogs.
+- Assignment and backup assignment enforce a 30-minute scheduling buffer; actual road distance/travel time is not calculated.
+- Walker can accept, mark arrival with a foreground GPS snapshot, start, finish with report and await Admin verification.
+- Walker can see dog data only when an assigned booking exists.
 
-Walker: assigned duties, accept, foreground GPS arrival, start/end/report, incident submission, GPS-tagged handover request and final completion after both approvals, private payout list.
+### Safety, leave and payout
+- Outside handover requires a GPS-tagged Walker request, private camera photo upload, customer photo review and YES, Admin approval, and final Walker confirmation with another GPS snapshot.
+- Admin Support uses short-lived signed URLs to review private evidence.
+- Incident reporting and Admin resolution are persisted.
+- Walker submits leave dates/reason; Admin approves/rejects. Approved leave can trigger backup assignment without changing the subscription primary walker.
+- Payout draft requires at least one verified completed walk in the selected period. Admin manually enters the amount, approves and marks paid. Duplicate walker-period payouts are blocked. No unapproved Walker pay rate is calculated.
 
-Admin: manual payment verification, up-to-30-day recurring booking generation, assignment, walk verification, handover approval, incident resolution, live package catalogue and manual payout workflow.
+## Client wiring
 
-Still not configured: email SMTP/OTP delivery, payment gateway/QR/webhook/refunds, photo storage/evidence, background GPS/geofence, push notifications, automated payout rates, walker KYC/provisioning, leave/backup workflow and end-to-end device tests. Supabase Security Advisor continues to report authenticated SECURITY DEFINER RPC warnings; independent review is required.
+Customer Expo app:
+- Email OTP role gate, profile/dog save, live package catalogue, manual UPI reference submission, active subscription schedule, walk history, customer handover photo review and YES/NO consent.
 
+Walker Expo app:
+- Email OTP role gate, assigned duties, accept/start/finish, foreground GPS arrival, incident reporting, leave request/history, handover camera upload/final GPS confirmation, private own-payout list.
 
-The ninth staging migration adds a Walker-scoped SELECT policy for dog records only where an assigned booking exists, corrects the subscription-to-booking join in the Walker read policy, and permits Walker self-profile updates without allowing role changes. These policy definitions were verified in `pg_policies`; all 13 public tables remain RLS-enabled.
+Admin Next.js console:
+- Email OTP + database Admin role gate, payment verification, booking generation/assignment/walk verification, leave approval/backup assignment, handover photo review/approval, incident resolution, live package catalogue and manual payout ledger.
 
+## Remaining launch blockers
 
-## Private handover evidence storage (2026-11-24)
+- Supabase Auth email provider/SMTP configuration and real mailbox tests.
+- Trusted provisioning of initial Admin and approved Walker accounts. No self-service role promotion exists.
+- Payment gateway/UPI QR/deep link/webhook/refunds/reconciliation; current customer flow accepts manual UPI reference only.
+- Continuous/background GPS, arrival geofence, route navigation, route-distance travel-time checks and live Realtime map.
+- Push notifications and customer notification delivery for assignment/leave/backup changes.
+- Walker KYC, document upload, training and secure provisioning UI.
+- Approved Walker pay rate and automated payout calculation.
+- Full role-based RLS/RPC integration tests, Android builds/device QA, independent security review and deployment.
 
-The tenth staging migration creates a private `handover-evidence` bucket (5 MB maximum; JPEG/PNG/WebP only), with walker-scoped object upload and participant/Admin read policies. The Walker camera flow uploads evidence to a request-specific path and attaches it through `walker_attach_handover_evidence`. The Admin approval RPC now rejects approval unless the customer has selected YES and a valid uploaded object exists. Admin Support creates a short-lived signed URL to review the photo. Final Walker completion records a second GPS snapshot and an audit event.
+## Security findings
 
-Verified storage configuration and policy behavior still need device-level testing with real Walker, Customer and Admin accounts; no live handover has been performed in staging.
+RLS is enabled on all 14 staging public tables. Supabase Security Advisor reports 25 authenticated SECURITY DEFINER RPC warnings. Functions use fixed empty search paths and explicit role/ownership/state checks, but these warnings require independent review and penetration testing. Do not assume RLS enabled alone proves access control is correct.
+
+The private Storage bucket has a Walker-scoped INSERT policy and participant/Admin SELECT policy. Device upload and signed-URL viewing have not yet been exercised with real customer/Walker/Admin sessions.
+
+## Migration source-control caveat
+
+The 13 migrations are applied in staging. The eight follow-up migration SQL files are mirrored in `supabase/migrations/` with their applied version numbers. The original five core migration SQL sources were applied before source files were added to the repository and remain missing. Reconstruct those first five SQL files before expecting a clean database rebuild from the repository migration directory.

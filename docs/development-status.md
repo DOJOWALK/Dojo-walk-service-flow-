@@ -51,3 +51,10 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 
 - Customer support/feedback request screen added with issue categories and booking reference.
 - Walker daily duty roster screen added with assignment/privacy guidance.
+
+## Shared domain rules strengthened
+- Booking validation now rejects non-integer day counts and enforces monthly=30 / temporary=1–15.
+- Added shared package price estimate from the approved 30-minute rate card; 45/60-minute amounts remain proportional estimates.
+- Walker capacity check now fails closed for invalid counts and enforces fewer than 10 current assigned dogs before adding another.
+- Outside handover completion now requires both customer consent = YES and Admin decision = approved.
+- These functions are not yet wired to app screens or a backend; automated tests have not been run.

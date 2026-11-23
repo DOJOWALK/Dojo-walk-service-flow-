@@ -146,3 +146,10 @@ Still not configured: email SMTP/OTP delivery, payment gateway/QR/webhook/refund
 
 
 The ninth staging migration adds a Walker-scoped SELECT policy for dog records only where an assigned booking exists, corrects the subscription-to-booking join in the Walker read policy, and permits Walker self-profile updates without allowing role changes. These policy definitions were verified in `pg_policies`; all 13 public tables remain RLS-enabled.
+
+
+## Private handover evidence storage (2026-11-24)
+
+The tenth staging migration creates a private `handover-evidence` bucket (5 MB maximum; JPEG/PNG/WebP only), with walker-scoped object upload and participant/Admin read policies. The Walker camera flow uploads evidence to a request-specific path and attaches it through `walker_attach_handover_evidence`. The Admin approval RPC now rejects approval unless the customer has selected YES and a valid uploaded object exists. Admin Support creates a short-lived signed URL to review the photo. Final Walker completion records a second GPS snapshot and an audit event.
+
+Verified storage configuration and policy behavior still need device-level testing with real Walker, Customer and Admin accounts; no live handover has been performed in staging.

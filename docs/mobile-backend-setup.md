@@ -1,12 +1,30 @@
-# Mobile staging backend setup
+# Staging backend connection setup
 
-Both Expo apps now have a persistent Supabase client and an email OTP role gate.
+All three app surfaces now have Supabase client/auth integration:
 
-1. Copy `.env.example` to `.env` in each app folder.
-2. Replace `YOUR_STAGING_PUBLISHABLE_KEY` with the staging project's publishable key from Supabase Project Settings → API Keys.
-3. Never put a Supabase secret/service-role key in an Expo app.
-4. Restart Expo after changing environment variables.
+- Customer and Walker Expo apps: persistent Supabase client with email OTP. Customer can create an account; Walker login is restricted to an already provisioned Walker profile.
+- Admin Next.js console: email OTP login, then a database profile role check requiring `admin`.
 
-Customer accounts can be created through email OTP. Walker accounts are sign-in-only and must first be provisioned/approved by an administrator with `profiles.role = 'walker'`. The role gate reads the signed-in user's own profile under RLS; it does not trust client-supplied role metadata.
+## Environment
 
-Email OTP delivery depends on the Supabase Auth email provider and SMTP configuration. Test with a real mailbox before release. These changes connect the apps to staging but do not yet wire booking screens, GPS, payment gateway, or walker duty actions to RPCs.
+Copy the relevant `.env.example` to `.env` inside each app folder:
+
+- `apps/customer/.env.example`
+- `apps/walker/.env.example`
+- `apps/admin/.env.example`
+
+Set the staging project's publishable key. The URL is already prefilled. Restart the app/dev server after editing environment variables.
+
+Never use a Supabase secret/service-role key in a client app. The publishable key is intended for client use; row-level security remains the actual data-access boundary.
+
+## Provisioning and test requirements
+
+- Customer profile creation is handled by the staging auth trigger.
+- Walker accounts must be created and approved by a trusted Admin process before Walker sign-in succeeds.
+- The initial Admin profile must be assigned `role = 'admin'` through a trusted owner-side process; never allow users to self-assign roles.
+- Email OTP delivery depends on Supabase Auth provider and SMTP configuration.
+- Test three separate accounts (customer, walker, admin), RLS ownership boundaries, and session persistence before launch.
+
+## Not yet wired
+
+These changes connect the client and authentication layer only. Customer booking forms, package payment submission, recurring schedule UI, Walker duty actions, Admin assignment/verification, GPS tracking, photo evidence, handover approval, payment gateway and payroll still need integration and end-to-end verification.

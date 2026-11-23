@@ -79,3 +79,11 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - Inspected the connected Supabase account: one populated project contains 21 public tables with RLS enabled; the separately named `dojo-walk-staging` project is active and empty.
 - Reviewed the security/performance advisor output. Findings and safe remediation sequence are documented in `docs/backend-audit.md`.
 - No database writes were made because the owner has not confirmed which project is the intended integration target. Do not treat the existing schema as production-ready until RPC authorization, RLS access tests, payment webhooks and device flows are verified.
+
+
+## Staging backend implementation (2026-11-24)
+- Selected Supabase project: `dojo-walk-staging` (`pcyrqgowmztbcogamzog`).
+- Applied five migrations for the 13-table Service Flow schema, RLS, pricing seed, customer payment-reference submission, Admin payment review/assignment/walk verification, Walker accept/GPS/start/finish, recurring schedule generation and foreign-key indexes.
+- Verified 13/13 public tables have RLS enabled, 12 Service Flow RPCs exist, and 54 package rows are seeded (18 approved 30-minute rates + 36 quote-only 45/60-minute options).
+- Full details and remaining integration work: `docs/backend-audit.md`.
+- Client apps, Auth OTP, Storage, Realtime, push, gateway/webhooks, handover approval, incidents lifecycle, payroll calculations and device-level end-to-end tests remain pending.

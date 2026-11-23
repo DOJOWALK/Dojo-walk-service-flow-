@@ -24,3 +24,9 @@ jobs:
         run: npm install
       - name: TypeScript checks and Admin production build
         run: npm run check
+      - name: Validate Customer Expo dependencies and config
+        working-directory: apps/customer
+        run: npx --yes expo-doctor
+      - name: Validate Walker Expo dependencies and config
+        working-directory: apps/walker
+        run: npx --yes expo-doctor

@@ -25,3 +25,14 @@ This is an in-progress source scaffold, not a production-ready service.
 
 ## Owner integration handoff
 Database and API are intentionally not configured. Connect backend adapters, enforce authorization server-side, and add row-level policies before any real customer or walker data is used.
+
+## Admin operations screens added (demo-only)
+- `/customers`: customer and dog register table with search and service-area filter.
+- `/bookings`: monthly/temporary booking list and plan catalogue selector.
+- `/walkers`: candidate pipeline and activation checklist.
+- `/assignments`: primary walker assignment desk and workload guardrails.
+- `/leave`: weekly-off/emergency leave queue and backup workflow.
+- `/finance`: customer price reference, collections handoff and walker payroll separation.
+- Owner sidebar now routes to these screens.
+
+These pages use illustrative records and explanatory controls only. Buttons labelled API-required do not create or change records. No live customer, walker, payment, KYC, location or payroll data is present.

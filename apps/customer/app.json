@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "DOJO WALK Customer",
+    "slug": "dojo-walk-customer",
+    "scheme": "dojowalk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": ["expo-router"],
+    "android": { "package": "com.dojowalk.customer" }
+  }
+}

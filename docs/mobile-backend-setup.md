@@ -18,7 +18,8 @@ Each template contains the staging URL and client-safe publishable key. Copy to 
 4. Admin generates up to 30 days of Monday–Saturday bookings, assigns an approved active primary walker and verifies walk reports. Primary walker continuity, 10-dog capacity and a 30-minute scheduling buffer are enforced.
 5. Walker sees only assigned duties, accepts, marks arrival using a foreground GPS snapshot, starts and ends the walk, and submits a report.
 6. Customer can view walk history. Outside handover requests require GPS, a private camera photo upload, customer photo review and explicit YES, Admin approval after photo review and a final walker completion confirmation with another GPS audit snapshot. Incidents are recorded and resolved by Admin.
-7. Walker submits leave dates and reason; Admin approves/rejects. Only approved leave can trigger a backup assignment, and the primary walker remains unchanged.\n8. Admin creates payout drafts only for walkers with verified completed walks in the period, manually enters the amount, approves and marks paid. Duplicate walker-period payouts are blocked. Walker sees only their own payout records.
+7. Walker submits leave dates and reason; Admin approves/rejects. Only approved leave can trigger a backup assignment, and the primary walker remains unchanged.
+8. Admin creates payout drafts only for walkers with verified completed walks in the period, manually enters the amount, approves and marks paid. Duplicate walker-period payouts are blocked. Walker sees only their own payout records.
 
 ## Configuration and launch prerequisites
 

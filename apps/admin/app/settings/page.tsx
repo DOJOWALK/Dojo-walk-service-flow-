@@ -1,0 +1,6 @@
+import OpsPage from "../_components/ops-page";
+export default function Settings(){return <OpsPage title="Settings & Permissions" intro="Configure service policies, role access and integration readiness. Protect personal information and keep high-risk approvals restricted to authorized Admin users." cards={[
+{title:"Service policy",status:"OWNER CONTROL",detail:"Company-wide operational settings.",items:["Service areas: Gaur City 2, Gaur City 1, Crossings Republik","Morning 05:00–11:00 · Evening 16:00–22:00","Maximum 10 assigned dogs per walker, subject to feasibility","Monthly primary walker and approved backup policy"]},
+{title:"Roles & access",status:"PLANNED",detail:"Least-privilege access for owner, operations staff and walkers.",items:["Owner / Founder: full oversight","Operations Admin: approved operational actions","Walker: own duties and own earnings only","Customer: own profile, bookings and walk reports"]},
+{title:"Integrations",status:"NOT CONFIGURED",detail:"Store secrets securely in deployment environment, never in source code.",items:["Supabase database and storage","OTP / authentication provider","Maps, geocoding and routing provider","Push notifications and payment gateway"]}
+]}/>}

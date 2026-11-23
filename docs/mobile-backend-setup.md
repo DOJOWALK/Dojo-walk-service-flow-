@@ -24,7 +24,7 @@ Each template contains the staging URL and client-safe publishable key. Copy to 
 ## Configuration and launch prerequisites
 
 - Email OTP delivery depends on Supabase Auth email provider and SMTP configuration.
-- Provision the initial Admin profile and approved Walker profiles through a trusted owner-side process. Never allow users to self-assign roles.
+- Initial Admin profile must be provisioned through trusted owner-side tooling. A Walker candidate first creates a Customer account and saves name/phone; Admin can move that profile into Walker review and approve/reject/suspend it. The RPC refuses to convert an account with an active customer subscription. KYC documents, reference checks and training records are still reviewed offline; never allow users to self-assign roles.
 - Manual UPI reference is not a payment gateway. No QR, webhook, auto reconciliation or refund automation is configured.
 - Walker arrival uses a foreground GPS snapshot only. No continuous/background tracking or arrival geofence is implemented. Handover photo evidence uses a private Storage bucket and is required by the Admin approval RPC.
 - Walker pay rate has not been approved. Payout amount is therefore entered by Admin; no pay rate is invented or auto-calculated.

@@ -1,0 +1,10 @@
+{
+  "name": "dojo-walk",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "customer": "npm --workspace @dojo-walk/customer start",
+    "walker": "npm --workspace @dojo-walk/walker start",
+    "admin": "npm --workspace @dojo-walk/admin dev"
+  }
+}

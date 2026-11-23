@@ -7,15 +7,15 @@ All three app surfaces now have Supabase client/auth integration:
 
 ## Environment
 
-Copy the relevant `.env.example` to `.env` inside each app folder:
+Each app has a ready-to-copy `.env.example`:
 
 - `apps/customer/.env.example`
 - `apps/walker/.env.example`
 - `apps/admin/.env.example`
 
-Set the staging project's publishable key. The URL is already prefilled. Restart the app/dev server after editing environment variables.
+The staging URL and **publishable** key are prefilled. These values are intended for client-side use; they are not service-role or secret keys. For local development, copy the file to `.env` in that app folder and restart the dev server. For EAS/hosted deployments, add the same variables to that platform's environment settings.
 
-Never use a Supabase secret/service-role key in a client app. The publishable key is intended for client use; row-level security remains the actual data-access boundary.
+Never use a Supabase secret/service-role key in a client app. The publishable key is not an authorization boundary; row-level security and server-side role checks protect data.
 
 ## Provisioning and test requirements
 

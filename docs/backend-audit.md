@@ -115,3 +115,31 @@ Security note: Supabase Security Advisor currently flags the 12 authenticated RP
 - Payroll tables exist, but completed-walk payout calculation, approval and monthly settlement logic are pending.
 - No end-to-end user-session test has been run. Database migrations and schema counts were verified; app build/device tests were not run.
 - First Admin role must be assigned by the project owner through a trusted server-side/admin process, never from client metadata.
+
+
+## Staging follow-up migrations (2026-11-24)
+
+The staging project `pcyrqgowmztbcogamzog` now has nine applied migrations total. The original five Service Flow migrations remain as previously recorded above; four follow-up migrations add:
+
+- `service_flow_handover_incidents_payroll`: walker handover request, customer YES/NO, Admin review, incident reporting/resolution, and manually entered payout draft/approval/paid RPCs.
+- `service_flow_30_day_generation_and_incident_resolution`: expands recurring booking generation from 14 to 30 days and moves an incident booking into Admin review after incident resolution.
+- `service_flow_confirm_approved_handover`: requires customer YES and Admin approval before the Walker can record final handover completion; stores a second GPS snapshot and audit event.
+- `service_flow_walker_read_scope_and_profile_policy`: grants walkers read access to dog details only when an assigned booking exists, fixes the walker subscription read join, and allows Walker self-profile edits while retaining role=walker.
+
+Verified staging totals after these changes:
+- 13 public tables; all 13 have RLS enabled.
+- 54 package rows: 18 approved 30-minute rates and 36 quote-only 45/60-minute variants.
+- 21 application RPC functions (plus the Auth profile trigger).
+- Nine applied migrations.
+
+The four follow-up SQL files are mirrored under `supabase/migrations/` with the exact migration versions recorded by Supabase. The original five migration SQL sources were applied before they were added to repository source control and are still not mirrored; reconstruct those five files before expecting a clean database rebuild from repository migrations.
+
+## Client workflow wiring
+
+Customer: profile/dog save, package lookup, manual UPI reference submission, active subscription schedule save, handover consent and walk history.
+
+Walker: assigned duties, accept, foreground GPS arrival, start/end/report, incident submission, GPS-tagged handover request and final completion after both approvals, private payout list.
+
+Admin: manual payment verification, up-to-30-day recurring booking generation, assignment, walk verification, handover approval, incident resolution, live package catalogue and manual payout workflow.
+
+Still not configured: email SMTP/OTP delivery, payment gateway/QR/webhook/refunds, photo storage/evidence, background GPS/geofence, push notifications, automated payout rates, walker KYC/provisioning, leave/backup workflow and end-to-end device tests. Supabase Security Advisor continues to report authenticated SECURITY DEFINER RPC warnings; independent review is required.

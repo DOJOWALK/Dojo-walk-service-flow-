@@ -48,3 +48,6 @@ These pages use illustrative records and explanatory controls only. Buttons labe
 - Customer and walker home screens link to the added screens.
 
 These screens are UI scaffolds. State is temporary, sample records are illustrative, and buttons do not persist data or trigger external actions. No app build, TypeScript check, automated test or device QA has been run.
+
+- Customer support/feedback request screen added with issue categories and booking reference.
+- Walker daily duty roster screen added with assignment/privacy guidance.

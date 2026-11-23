@@ -84,3 +84,34 @@ This is a useful starting point; avoid creating duplicate tables before reviewin
 ## Current limitation
 
 No database schema or row was changed in this audit. No live booking, payment, GPS session, notification, handover or payout was created. The database is not yet connected to the mobile/admin clients by this audit.
+
+## Staging implementation update (2026-11-24)
+
+The owner selected `dojo-walk-staging` (project ref `pcyrqgowmztbcogamzog`, region `ap-southeast-1`). Four database migrations have been applied successfully:
+
+- `dojo_walk_service_flow_core`
+- `service_flow_booking_walk_rpcs`
+- `service_flow_packages_and_payments`
+- `service_flow_recurring_schedules`
+- `service_flow_limits_and_indexes`
+
+Verified staging inventory: 13 public tables, all 13 with RLS enabled; 12 Service Flow RPCs; 54 package rows. The package seed contains all 18 approved 30-minute rates (Single/Double × 1, 2, 3, 5, 7, 10, 14, 15, 30 days) and 36 45/60-minute Admin-quote-only options. 45/60-minute values were not invented.
+
+Implemented backend foundation:
+- Customer, dog, walker, package, subscription, recurring schedule, booking, walk event, GPS location, handover, incident, payment and payout tables.
+- Customer package payment reference submission and Admin verification (manual UPI reference workflow only; no payment gateway).
+- Admin-only walker assignment with approved/active walker checks and 10-dog capacity guard.
+- Walker accept → GPS arrival → start → finish submission; Admin verify/review.
+- Recurring booking generation window up to 14 days, with India-time morning/evening windows and package walk-count validation.
+- RLS enabled across all 13 tables, role/ownership-aware read policies, and indexes for the identified foreign-key access paths.
+
+Security note: Supabase Security Advisor currently flags the 12 authenticated RPCs as `SECURITY DEFINER`. These are intentionally callable RPC entry points and contain explicit caller/role/ownership/state checks plus an empty fixed search_path. Keep the warning visible for review; do not remove checks or broadly grant table writes to silence the lint.
+
+## Still not production-complete
+
+- Mobile and Admin clients are not yet wired to this staging project; no project URL or publishable key has been committed.
+- No Auth OTP provider, test customer/walker/admin accounts, Storage bucket policies, Realtime subscriptions, push notifications, payment gateway/webhook, or Edge Functions configured.
+- Handover and incident tables exist, but their complete consent/approval RPCs and evidence upload flow are still pending.
+- Payroll tables exist, but completed-walk payout calculation, approval and monthly settlement logic are pending.
+- No end-to-end user-session test has been run. Database migrations and schema counts were verified; app build/device tests were not run.
+- First Admin role must be assigned by the project owner through a trusted server-side/admin process, never from client metadata.

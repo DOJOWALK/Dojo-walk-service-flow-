@@ -47,6 +47,22 @@ This is an npm workspaces repository. From the repository root, install workspac
 
 The customer and walker projects also expose `typecheck` scripts. The admin project exposes `typecheck` and `build`. These commands have not yet been run in this repository session; check SDK/package compatibility and resolve any errors before release.
 
+## Validation and Android builds
+
+From the repository root:
+
+- `npm install` — install workspace dependencies
+- `npm run typecheck` — run Customer, Walker and Admin TypeScript checks
+- `npm run build` — create the Admin production build
+- `npm run check` — run type checks followed by the Admin production build
+
+For Android internal-test APKs, run EAS from each app directory after configuring that app as an EAS project:
+
+- Customer: `cd apps/customer && npx eas-cli build --platform android --profile preview`
+- Walker: `cd apps/walker && npx eas-cli build --platform android --profile preview`
+
+The production profile creates an Android App Bundle. EAS project IDs, Android signing setup, and real cloud builds are not configured or completed yet. Do not distribute a build until authentication, privacy, backend, and device QA are complete.
+
 ## Pricing
 
 The approved 30-minute customer price cards and proportional 45/60-minute estimates are documented in `docs/pricing.md`. Walker payout rates remain an independent admin-only configuration and are not exposed to customers.

@@ -39,7 +39,7 @@ A separate Supabase staging project is configured for app integration. It contai
 
 Before running any app, copy each app's `.env.example` to `.env` and set the staging publishable key. Never expose a Supabase secret/service-role key in a client app. See [mobile/admin backend setup](docs/mobile-backend-setup.md).
 
-Customer profile save/load and the package-price catalogue are now connected to staging. Booking submission, walker duty actions, live GPS, photo evidence, handover approvals, payment gateway and payroll still need end-to-end wiring and tests. The staging backend is not production and the existing populated Supabase project has not been modified.
+Customer profile save/load, package payment-reference submission, schedule save, walk history, walker duty lifecycle, foreground GPS arrival, Admin payment verification, booking generation/assignment/walk verification, handover consent, incident resolution and manual payout ledger are connected to staging. Actual payment gateway, background GPS, photo evidence, push notifications, production payroll rates and end-to-end QA remain outstanding. The staging backend is not production and the existing populated Supabase project has not been modified.
 
 ## Local development
 

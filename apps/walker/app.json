@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "DOJO WALK Walker",
+    "slug": "dojo-walk-walker",
+    "scheme": "dojowalkwalker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": ["expo-router"],
+    "android": { "package": "com.dojowalk.walker" }
+  }
+}

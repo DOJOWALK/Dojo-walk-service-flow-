@@ -9,22 +9,25 @@ This is an in-progress source scaffold, not a production-ready service.
 - Admin owner dashboard and workflow control centre.
 - Shared booking validation, walker capacity and walk transition rules.
 - OpenStreetMap configurable map component and provider policy.
-- Pricing and backend integration documentation.
+- Supabase staging Service Flow schema with 13 RLS-enabled tables, 54 package rows and 12 authenticated RPCs.
+- Customer and Walker Supabase clients with persisted sessions and email OTP role gates.
+- Admin console OTP gate that checks the signed-in profile's admin role.
+- Staging environment templates and backend setup documentation.
 
 ## Not yet implemented / verified
-- Production OTP authentication and role authorization.
-- Persisted customer/dog profiles, bookings and schedule engine.
-- Real package pricing catalogue, checkout and payment verification.
-- Hiring document upload, KYC review, training records and secure activation.
-- Assignment optimization and recurring schedule generation.
+- Email OTP provider/SMTP configuration and real mailbox sign-in tests.
+- Persisted customer/dog profile, booking and schedule screens wired to the RPCs.
+- Admin live assignment/verification screens wired to the backend.
+- Hiring document upload, KYC review, training records and secure walker provisioning UI.
+- Assignment optimization, permanent primary walker enforcement and travel-time conflict checks.
 - Device GPS permissions, reliable background tracking, route navigation and arrival geofence.
 - Photo storage, push notifications and real-time Admin operations.
 - Leave approvals, backup assignment transactions, customer outside consent and audit persistence.
-- Payroll ledger, payout approvals, refunds and reconciliation.
+- Payment gateway/webhook, payroll ledger, payout approvals, refunds and reconciliation.
 - Automated tests, Android builds, device QA, deployment and security review.
 
 ## Owner integration handoff
-Database and API are intentionally not configured. Connect backend adapters, enforce authorization server-side, and add row-level policies before any real customer or walker data is used.
+The mobile and admin clients use only the staging project's publishable key and rely on database RLS plus role checks. Do not add service-role credentials to frontend apps. First provision the initial Admin profile through a trusted owner-side process, then provision Walker profiles only after recruitment approval. Verify OTP delivery and RLS behavior with separate customer, walker and admin accounts before connecting live operations.
 
 ## Admin operations screens added (demo-only)
 - `/customers`: customer and dog register table with search and service-area filter.
@@ -35,55 +38,4 @@ Database and API are intentionally not configured. Connect backend adapters, enf
 - `/finance`: customer price reference, collections handoff and walker payroll separation.
 - Owner sidebar now routes to these screens.
 
-These pages use illustrative records and explanatory controls only. Buttons labelled API-required do not create or change records. No live customer, walker, payment, KYC, location or payroll data is present.
-
-## Customer and walker app screens added (demo-only)
-- Customer booking: enforces 30 days for monthly and 1–15 days for temporary; includes Single/Double, 30/45/60-minute options, service windows and a visible price estimate. The approved 30-minute totals are used; 45/60-minute values are proportional estimates only.
-- Customer profile: customer contact/address and dog breed, age, temperament, care instructions, vet and emergency contact fields.
-- Customer activity: sample walk-history view.
-- Walker report: behaviour, walk notes and incident detail form.
-- Walker earnings: monthly payout explanation and privacy separation.
-- Walker outside handover: explicit customer YES plus Admin approval sequence is documented; no handover action is enabled.
-- Walker incident report: incident type, immediate danger and factual report fields.
-- Customer and walker home screens link to the added screens.
-
-These screens are UI scaffolds. State is temporary, sample records are illustrative, and buttons do not persist data or trigger external actions. No app build, TypeScript check, automated test or device QA has been run.
-
-- Customer support/feedback request screen added with issue categories and booking reference.
-- Walker daily duty roster screen added with assignment/privacy guidance.
-
-## Shared domain rules strengthened
-- Booking validation now rejects non-integer day counts and enforces monthly=30 / temporary=1–15.
-- Added shared package price estimate from the approved 30-minute rate card; 45/60-minute amounts remain proportional estimates.
-- Walker capacity check now fails closed for invalid counts and enforces fewer than 10 current assigned dogs before adding another.
-- Outside handover completion now requires both customer consent = YES and Admin decision = approved.
-- These functions are not yet wired to app screens or a backend; automated tests have not been run.
-
-## Admin operations and release scaffolding
-- Added owner pages for Schedules & Walks, Live Operations, Support & Incidents, Reports & Audit, and Settings & Permissions.
-- Connected the owner dashboard navigation to these pages; all queue entries are demo/policy scaffolds, not live records.
-- Added root `npm run typecheck`, `npm run build`, and `npm run check` commands.
-- Added GitHub Actions CI workflow to install dependencies, run workspace type checks and build the Admin app on main pushes / pull requests.
-- Added EAS preview APK and production Android App Bundle profiles for Customer and Walker apps.
-- EAS project initialization, signing credentials, actual builds, and device installation are still pending. CI has been configured but has not yet been observed passing.
-
-- Added strict TypeScript configuration and a typecheck script for the shared domain package; root typecheck now includes domain, customer, walker and admin.
-
-- Pinned Customer `react-native-maps` to Expo SDK 58's documented compatible version and added dynamic Android Maps API-key config. The real key must be stored in EAS secrets; it is not in Git.
-- Extended CI to run Expo Doctor separately for Customer and Walker apps. The previously reported CI success predates these added checks; wait for the next workflow run before treating the expanded CI as green.
-- EAS builds remain blocked until each app is linked to the correct Expo account/project, GitHub access is connected, and any required Maps key is configured. No project IDs or credentials have been invented.
-- Updated Temporary Booking to allow every integer duration from 1–15 days. For day counts without an approved published rate, the UI requests an Admin quote instead of showing a fabricated price.
-
-
-## Supabase backend audit (2026-11-24)
-- Inspected the connected Supabase account: one populated project contains 21 public tables with RLS enabled; the separately named `dojo-walk-staging` project is active and empty.
-- Reviewed the security/performance advisor output. Findings and safe remediation sequence are documented in `docs/backend-audit.md`.
-- No database writes were made because the owner has not confirmed which project is the intended integration target. Do not treat the existing schema as production-ready until RPC authorization, RLS access tests, payment webhooks and device flows are verified.
-
-
-## Staging backend implementation (2026-11-24)
-- Selected Supabase project: `dojo-walk-staging` (`pcyrqgowmztbcogamzog`).
-- Applied five migrations for the 13-table Service Flow schema, RLS, pricing seed, customer payment-reference submission, Admin payment review/assignment/walk verification, Walker accept/GPS/start/finish, recurring schedule generation and foreign-key indexes.
-- Verified 13/13 public tables have RLS enabled, 12 Service Flow RPCs exist, and 54 package rows are seeded (18 approved 30-minute rates + 36 quote-only 45/60-minute options).
-- Full details and remaining integration work: `docs/backend-audit.md`.
-- Client apps, Auth OTP, Storage, Realtime, push, gateway/webhooks, handover approval, incidents lifecycle, payroll calculations and device-level end-to-end tests remain pending.
+These pages use illustrative records and explanatory controls only. Buttons labelled API-required do not create or change records. No live customer, walker, payment, KYC, location or payroll records are displayed.

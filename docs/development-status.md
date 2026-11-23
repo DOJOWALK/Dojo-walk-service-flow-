@@ -58,3 +58,11 @@ These screens are UI scaffolds. State is temporary, sample records are illustrat
 - Walker capacity check now fails closed for invalid counts and enforces fewer than 10 current assigned dogs before adding another.
 - Outside handover completion now requires both customer consent = YES and Admin decision = approved.
 - These functions are not yet wired to app screens or a backend; automated tests have not been run.
+
+## Admin operations and release scaffolding
+- Added owner pages for Schedules & Walks, Live Operations, Support & Incidents, Reports & Audit, and Settings & Permissions.
+- Connected the owner dashboard navigation to these pages; all queue entries are demo/policy scaffolds, not live records.
+- Added root `npm run typecheck`, `npm run build`, and `npm run check` commands.
+- Added GitHub Actions CI workflow to install dependencies, run workspace type checks and build the Admin app on main pushes / pull requests.
+- Added EAS preview APK and production Android App Bundle profiles for Customer and Walker apps.
+- EAS project initialization, signing credentials, actual builds, and device installation are still pending. CI has been configured but has not yet been observed passing.

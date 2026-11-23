@@ -143,3 +143,6 @@ Walker: assigned duties, accept, foreground GPS arrival, start/end/report, incid
 Admin: manual payment verification, up-to-30-day recurring booking generation, assignment, walk verification, handover approval, incident resolution, live package catalogue and manual payout workflow.
 
 Still not configured: email SMTP/OTP delivery, payment gateway/QR/webhook/refunds, photo storage/evidence, background GPS/geofence, push notifications, automated payout rates, walker KYC/provisioning, leave/backup workflow and end-to-end device tests. Supabase Security Advisor continues to report authenticated SECURITY DEFINER RPC warnings; independent review is required.
+
+
+The ninth staging migration adds a Walker-scoped SELECT policy for dog records only where an assigned booking exists, corrects the subscription-to-booking join in the Walker read policy, and permits Walker self-profile updates without allowing role changes. These policy definitions were verified in `pg_policies`; all 13 public tables remain RLS-enabled.

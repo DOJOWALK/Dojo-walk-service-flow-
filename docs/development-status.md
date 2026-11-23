@@ -36,3 +36,15 @@ Database and API are intentionally not configured. Connect backend adapters, enf
 - Owner sidebar now routes to these screens.
 
 These pages use illustrative records and explanatory controls only. Buttons labelled API-required do not create or change records. No live customer, walker, payment, KYC, location or payroll data is present.
+
+## Customer and walker app screens added (demo-only)
+- Customer booking: enforces 30 days for monthly and 1–15 days for temporary; includes Single/Double, 30/45/60-minute options, service windows and a visible price estimate. The approved 30-minute totals are used; 45/60-minute values are proportional estimates only.
+- Customer profile: customer contact/address and dog breed, age, temperament, care instructions, vet and emergency contact fields.
+- Customer activity: sample walk-history view.
+- Walker report: behaviour, walk notes and incident detail form.
+- Walker earnings: monthly payout explanation and privacy separation.
+- Walker outside handover: explicit customer YES plus Admin approval sequence is documented; no handover action is enabled.
+- Walker incident report: incident type, immediate danger and factual report fields.
+- Customer and walker home screens link to the added screens.
+
+These screens are UI scaffolds. State is temporary, sample records are illustrative, and buttons do not persist data or trigger external actions. No app build, TypeScript check, automated test or device QA has been run.

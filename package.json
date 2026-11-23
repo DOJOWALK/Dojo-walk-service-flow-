@@ -9,7 +9,7 @@
     "customer": "npm --workspace @dojo-walk/customer start",
     "walker": "npm --workspace @dojo-walk/walker start",
     "admin": "npm --workspace @dojo-walk/admin dev",
-    "typecheck": "npm run typecheck --workspace @dojo-walk/customer && npm run typecheck --workspace @dojo-walk/walker && npm run typecheck --workspace @dojo-walk/admin",
+    "typecheck": "npm run typecheck --workspace @dojo-walk/domain && npm run typecheck --workspace @dojo-walk/customer && npm run typecheck --workspace @dojo-walk/walker && npm run typecheck --workspace @dojo-walk/admin",
     "build": "npm run build --workspace @dojo-walk/admin",
     "check": "npm run typecheck && npm run build"
   }

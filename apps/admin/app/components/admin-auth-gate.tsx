@@ -2,12 +2,16 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createClient, type SupabaseClient, type Session } from "@supabase/supabase-js";
 
+type LoginMode = "password" | "otp";
+
 export function AdminAuthGate({ children }: { children: ReactNode }) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const client = useMemo<SupabaseClient | null>(() => url && key ? createClient(url, key) : null, [url, key]);
   const [status, setStatus] = useState<"loading" | "signedOut" | "ready" | "denied">("loading");
+  const [mode, setMode] = useState<LoginMode>("password");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -32,6 +36,18 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
     return () => { active = false; data.subscription.unsubscribe(); };
   }, [client]);
 
+  async function signInWithPassword() {
+    if (!client) return;
+    setBusy(true); setError("");
+    const { data, error } = await client.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+    setBusy(false);
+    if (error) { setError(error.message); return; }
+    await checkRole(data.session);
+  }
+
   async function sendOtp() {
     if (!client) return;
     setBusy(true); setError("");
@@ -49,6 +65,9 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
     await checkRole(data.session);
   }
 
+  const inputStyle = { width: "100%", boxSizing: "border-box" as const, padding: 14, border: "1px solid #ddd", borderRadius: 10, margin: "8px 0" };
+  const buttonStyle = { flex: 1, padding: 11, border: "1px solid #dce5df", borderRadius: 9, fontWeight: 800, cursor: "pointer" as const };
+
   if (status === "ready") return <>{children}</>;
   return <main style={{minHeight:"100vh",display:"grid",placeItems:"center",background:"#f7f5ef",padding:24,fontFamily:"Arial,sans-serif"}}>
     <section style={{width:"100%",maxWidth:420,background:"#fff",padding:32,borderRadius:20,boxShadow:"0 12px 40px #173d3214"}}>
@@ -57,12 +76,25 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
       {!client ? <p>Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in the Admin environment.</p> :
         status === "loading" ? <p>Secure session check…</p> :
         status === "denied" ? <><p>This account is not provisioned as an Admin. Access denied.</p><button onClick={()=>void client.auth.signOut()}>Sign out</button></> :
-        <><p style={{color:"#68736d",lineHeight:1.5}}>Owner-only access. Enter your approved admin email to receive a one-time code.</p>
-          <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Admin email" type="email" style={{width:"100%",boxSizing:"border-box",padding:14,border:"1px solid #ddd",borderRadius:10,margin:"8px 0"}}/>
-          {sent && <input value={otp} onChange={e=>setOtp(e.target.value)} placeholder="Email OTP" inputMode="numeric" style={{width:"100%",boxSizing:"border-box",padding:14,border:"1px solid #ddd",borderRadius:10,margin:"8px 0"}}/>}
-          {error && <p style={{color:"#b42318"}}>{error}</p>}
-          <button disabled={busy} onClick={()=>void (sent?verifyOtp():sendOtp())} style={{width:"100%",padding:15,border:0,borderRadius:10,background:"#173D32",color:"#fff",fontWeight:800,cursor:"pointer"}}>{busy?"Please wait…":sent?"Verify OTP":"Send OTP"}</button>
-        </>}
+        <>
+          <p style={{color:"#68736d",lineHeight:1.5}}>Owner-only access. Use your approved Admin account.</p>
+          <div style={{display:"flex",gap:8,margin:"18px 0 10px"}}>
+            <button type="button" onClick={()=>{setMode("password");setError("");}} style={{...buttonStyle,background:mode==="password"?"#173D32":"#fff",color:mode==="password"?"#fff":"#173D32"}}>Password</button>
+            <button type="button" onClick={()=>{setMode("otp");setError("");}} style={{...buttonStyle,background:mode==="otp"?"#173D32":"#fff",color:mode==="otp"?"#fff":"#173D32"}}>OTP (optional)</button>
+          </div>
+          <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Admin email" type="email" autoComplete="username" style={inputStyle}/>
+          {mode === "password" ? (
+            <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" type="password" autoComplete="current-password" style={inputStyle}/>
+          ) : (
+            sent && <input value={otp} onChange={e=>setOtp(e.target.value)} placeholder="Email OTP" inputMode="numeric" autoComplete="one-time-code" style={inputStyle}/>
+          )}
+          {error && <p style={{color:"#b42318",lineHeight:1.4}}>{error}</p>}
+          <button disabled={busy || !email.trim() || (mode==="password" ? !password : sent && !otp.trim())} onClick={()=>void (mode==="password"?signInWithPassword():sent?verifyOtp():sendOtp())} style={{width:"100%",padding:15,border:0,borderRadius:10,background:"#173D32",color:"#fff",fontWeight:800,cursor:"pointer",opacity:busy?0.7:1}}>
+            {busy?"Please wait…":mode==="password"?"Sign in with password":sent?"Verify OTP":"Send OTP"}
+          </button>
+          {mode==="password" && <p style={{fontSize:12,color:"#68736d",lineHeight:1.5,marginTop:14}}>If this Admin account has no password yet, set one securely in the Supabase Auth user settings before signing in.</p>}
+        </>
+      }
     </section>
   </main>;
 }
